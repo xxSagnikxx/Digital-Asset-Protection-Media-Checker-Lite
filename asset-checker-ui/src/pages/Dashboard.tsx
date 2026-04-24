@@ -167,7 +167,7 @@ export default function Dashboard() {
   return (
     <AppShell>
       <div className="h-screen overflow-y-auto">
-        {/* Top bar */}
+        {}
         <header className="flex items-center justify-between px-8 py-5 border-b border-hairline">
           <div>
             <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">Operations Console</p>
@@ -184,9 +184,9 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Top summary — grouped mini-dashboards */}
+        {}
         <section className="px-8 pt-6 pb-4 grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {/* Group 1 — Protected Assets */}
+          {}
           <Widget
             label="Protected Assets"
             actions={<ShieldCheck className="h-3.5 w-3.5 text-forest" strokeWidth={1.6} />}
@@ -209,7 +209,7 @@ export default function Dashboard() {
             </div>
           </Widget>
 
-          {/* Group 2 — Risk Profile */}
+          {}
           <Widget
             label="Risk Profile"
             hint="Last 7 days · Hourly intensity"
@@ -232,7 +232,7 @@ export default function Dashboard() {
             <Heatmap data={heatmap} />
           </Widget>
 
-          {/* Group 3 — Scan Operations */}
+          {}
           <Widget
             label="Scan Operations"
             hint="Today vs 30-day average"
@@ -287,7 +287,7 @@ export default function Dashboard() {
           </Widget>
         </section>
 
-        {/* Center: feed + right rail detail panel */}
+        {}
         <section className="px-8 pb-8 grid grid-cols-1 xl:grid-cols-[1fr_360px] gap-4">
           {isLoading ? (
             <div className="panel rounded-md p-6 text-sm text-muted-foreground">Scanning...</div>

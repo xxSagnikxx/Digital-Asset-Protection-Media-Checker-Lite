@@ -9,11 +9,16 @@ export async function scrapeImages(targetUrl) {
     const $ = cheerio.load(html);
     const images = [];
     $("img").each((_, el) => {
-      const src = $(el).attr("src");
-      if (src) images.push(new URL(src, targetUrl).href);
+      const src = $(el).attr("src") || $(el).attr("data-src") || $(el).attr("data-lazy-src");
+      if (src) {
+        try {
+          images.push(new URL(src, targetUrl).href);
+        } catch (e) { /* skip broken urls */ }
+      }
     });
     return [...new Set(images)];
   } catch (err) {
+    console.error("Scrape Error:", err.message);
     return [];
   }
 }

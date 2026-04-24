@@ -30,6 +30,7 @@ export function mapReportToMatchRow(report: ReportItem): MatchRow {
     id: String(report.id),
     confidence,
     level: toConfidenceLevel(confidence),
+    status: "pending",
     official: {
       name: report.official_assets?.name ?? "Unknown Official Asset",
       thumb: report.official_assets?.public_url ?? "/placeholder.svg",

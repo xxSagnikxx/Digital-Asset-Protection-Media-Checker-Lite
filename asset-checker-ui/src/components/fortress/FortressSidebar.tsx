@@ -31,7 +31,7 @@ export function FortressSidebar() {
 
   return (
     <aside className="w-60 shrink-0 bg-sidebar border-r border-sidebar-border flex flex-col">
-      {/* Logo */}
+      {}
       <div className="px-5 pt-6 pb-5 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
           <div className="brushed-copper h-10 w-10 rounded-md grid place-items-center shadow-[0_4px_16px_-6px_hsl(22_60%_30%/0.7)] ring-1 ring-[hsl(22_70%_55%/0.4)]">
@@ -46,7 +46,7 @@ export function FortressSidebar() {
         </div>
       </div>
 
-      {/* Nav */}
+      {}
       <nav className="flex-1 px-3 py-4 space-y-0.5">
         <p className="px-2 pb-2 text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
           Workspace
@@ -86,7 +86,7 @@ export function FortressSidebar() {
         </button>
       </div>
 
-      {/* Theme toggle */}
+      {}
       <div className="p-3 pt-0">
         <button
           onClick={toggle}

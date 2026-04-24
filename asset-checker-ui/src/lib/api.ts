@@ -100,3 +100,13 @@ export async function autoScanUrl(payload: AutoScanUrlPayload): Promise<AutoScan
     body: JSON.stringify(payload),
   });
 }
+
+export async function updateMatchStatus(matchId: string, status: string): Promise<unknown> {
+  return request(`${API_BASE_URL}/api/matches/${matchId}/status`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status }),
+  });
+}

@@ -1,5 +1,5 @@
 interface GaugeProps {
-  value: number; // 0-100
+  value: number; 
   size?: number;
 }
 

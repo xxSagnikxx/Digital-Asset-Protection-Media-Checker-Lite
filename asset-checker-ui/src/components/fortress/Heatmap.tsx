@@ -1,5 +1,5 @@
 interface HeatmapProps {
-  data: number[][]; // rows x cols
+  data: number[][]; 
 }
 
 const days = ["M", "T", "W", "T", "F", "S", "S"];
