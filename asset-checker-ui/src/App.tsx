@@ -8,7 +8,8 @@ import Dashboard from "./pages/Dashboard";
 import OfficialAssetUpload from "./pages/OfficialAssetUpload";
 import SuspectMediaUpload from "./pages/SuspectMediaUpload";
 import MatchReports from "./pages/MatchReports";
-import NotFound from "./pages/NotFound.tsx";
+import SearchInterface from "./pages/SearchInterface";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/library" element={<OfficialAssetUpload />} />
             <Route path="/suspect" element={<SuspectMediaUpload />} />
             <Route path="/reports" element={<MatchReports />} />
+            <Route path="/search" element={<SearchInterface />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

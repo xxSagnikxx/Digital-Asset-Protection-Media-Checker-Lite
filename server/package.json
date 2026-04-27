@@ -14,6 +14,7 @@
   "type": "module",
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",
+    "adm-zip": "^0.5.17",
     "axios": "^1.15.2",
     "blockhash-core": "^0.1.0",
     "cheerio": "^1.2.0",

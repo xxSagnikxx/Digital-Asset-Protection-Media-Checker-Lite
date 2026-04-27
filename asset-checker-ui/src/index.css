@@ -3,46 +3,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Design system: copper accents, dual surface modes (dark = Warm Cocoa, light = Vellum). HSL tokens. */
-
 @layer base {
-  /* DARK (default) — Warm Cocoa */
   :root {
-    --background: 22 25% 8%;            /* #1A1410 */
-    --foreground: 38 65% 88%;           /* #F5E6CC antique gold/cream */
-
-    --panel: 22 22% 12%;                /* #2A2018 panels */
+    --background: 22 25% 8%;            
+    --foreground: 38 65% 88%;           
+    --panel: 22 22% 12%;              
     --panel-raised: 22 20% 15%;
     --panel-foreground: 38 65% 88%;
-
     --card: 22 22% 12%;
     --card-foreground: 38 65% 88%;
-
     --popover: 22 22% 12%;
     --popover-foreground: 38 65% 88%;
-
-    /* Copper primary */
-    --primary: 22 60% 45%;              /* #B76E2F copper */
+    --primary: 22 60% 45%;           
     --primary-foreground: 38 65% 92%;
     --copper: 22 60% 45%;
-    --copper-bright: 22 70% 55%;        /* brushed highlight */
+    --copper-bright: 22 70% 55%;        
     --copper-deep: 22 65% 32%;
-    --gold: 38 70% 70%;                 /* antique gold accent */
-
+    --gold: 38 70% 70%;             
     --secondary: 22 18% 18%;
     --secondary-foreground: 38 60% 85%;
-
     --muted: 22 16% 16%;
     --muted-foreground: 35 18% 58%;
-
     --accent: 22 50% 22%;
     --accent-foreground: 38 70% 82%;
-
-    /* Terracotta / alert */
-    --terracotta: 16 60% 60%;           /* #D67E5A */
+    --terracotta: 16 60% 60%;          
     --terracotta-foreground: 22 30% 12%;
-
     --destructive: 8 65% 52%;
     --destructive-foreground: 38 65% 92%;
 
