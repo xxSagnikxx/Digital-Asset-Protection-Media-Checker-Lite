@@ -1,86 +1,108 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
-import { Shield, Loader2, Globe } from "lucide-react";
+import { Shield, Loader2, Globe, Search } from "lucide-react";
+import { AppShell } from "@/components/fortress/AppShell";
 
 export default function SearchInterface() {
   const [status, setStatus] = useState<"idle" | "scanning">("idle");
+  const [url, setUrl] = useState("");
   const [log, setLog] = useState<string[]>([]);
 
-  const mockUrls = [
-    "Scanning: twitter.com/sports/media...",
-    "Scanning: instagram.com/explore/tags...",
-    "Analyzing: gettyimages.com/archive...",
-    "Querying: espn.com/players/photos...",
-    "Matching visual fingerprints against Node-72..."
-  ];
+  async function handleUrlHunt() {
+    if (!url) return toast.error("Enter a target URL first");
+    setStatus("scanning");
+    setLog(["Initializing surveillance engine...", `Targeting: ${url}`, "Fetching remote assets..."]);
 
-  async function handleScan(e: React.ChangeEvent<HTMLInputElement>) {
+    try {
+      const res = await fetch('http://127.0.0.1:8080/api/auto-scan-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      const data = await res.json();
+      
+      setLog(prev => [...prev, `Found ${data.scanned_count} images.`, `Detected ${data.matches_found} violations.`]);
+      
+      if (data.matches_found > 0) {
+        toast.error(`ALERT: ${data.matches_found} Unauthorized Assets Found`, { description: "Check reports for details." });
+      } else {
+        toast.success("Scan complete. Site is clean.");
+      }
+    } catch {
+      toast.error("Scan failed.");
+    } finally {
+      setStatus("idle");
+    }
+  }
+
+  async function handleFileScan(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setStatus("scanning");
-    setLog([]);
-    mockUrls.forEach((msg, i) => {
-      setTimeout(() => setLog(prev => [...prev, msg]), i * 600);
-    });
+    setLog(["Analyzing local file fingerprint...", "Checking global asset registry..."]);
 
     const fd = new FormData();
     fd.append('image', file);
 
     try {
-      const res = await fetch('http://127.0.0.1:8080/api/scan', { method: 'POST', body: fd });
+      const res = await fetch('http://127.0.0.1:8080/api/scan-suspect', { method: 'POST', body: fd });
       const data = await res.json();
-
-      if (data.match) {
-        setTimeout(() => {
-          toast.error(`MATCH DETECTED: Found in Global Registry (${data.score}% confidence)`, {
-            description: `Original Asset ID: ${data.asset_name}`,
-            duration: 10000
-          });
-          setStatus("idle");
-        }, 3500);
+      if (data.match_found) {
+        toast.error(`MATCH DETECTED: ${data.asset_name} (${data.score}%)`);
       } else {
-        setTimeout(() => {
-          toast.success("Scan complete. No unauthorized copies found.");
-          setStatus("idle");
-        }, 3500);
+        toast.success("No match found.");
       }
     } catch {
-      toast.error("Network error.");
+      toast.error("Scan failed.");
+    } finally {
       setStatus("idle");
     }
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-8 border border-white/10 bg-black/40 rounded-xl backdrop-blur-md">
-      <div className="flex items-center gap-3 mb-6">
-        <Globe className={`w-5 h-5 ${status === 'scanning' ? 'animate-spin text-blue-400' : 'text-gray-400'}`} />
-        <h2 className="text-xl font-semibold">Global Asset Surveillance</h2>
-      </div>
-
-      <div className="relative group border-2 border-dashed border-white/20 rounded-lg p-12 transition-colors hover:border-blue-500/50">
-        <input 
-          type="file" 
-          onChange={handleScan} 
-          className="absolute inset-0 opacity-0 cursor-pointer" 
-          disabled={status === 'scanning'}
-        />
-        <div className="text-center">
-          {status === 'idle' ? (
-            <>
-              <Shield className="w-12 h-12 mx-auto mb-4 text-gray-500" />
-              <p className="text-sm text-gray-400">Upload suspect image to begin automated hunt</p>
-            </>
-          ) : (
-            <div className="space-y-3">
-              <Loader2 className="w-8 h-8 mx-auto animate-spin text-blue-500" />
-              <div className="text-left bg-black/60 p-4 rounded font-mono text-[10px] text-blue-300 h-32 overflow-hidden">
-                {log.map((line, i) => <div key={i} className="mb-1 opacity-80">{line}</div>)}
-              </div>
-            </div>
-          )}
+    <AppShell>
+      <div className="max-w-3xl mx-auto mt-10 p-8 space-y-8">
+        <div className="flex items-center gap-3">
+          <Shield className="w-6 h-6 text-blue-500" />
+          <h1 className="text-2xl font-bold">Active Surveillance Hunt</h1>
         </div>
+
+        <div className="panel p-6 space-y-4 rounded-xl border border-hairline bg-panel">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Target URL Scraper</h2>
+          <div className="flex gap-2">
+            <input 
+              type="text" 
+              placeholder="https://suspect-sports-site.com/gallery" 
+              className="flex-1 bg-black/20 border border-hairline rounded px-4 py-2 text-sm"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+            />
+            <button 
+              onClick={handleUrlHunt}
+              disabled={status === "scanning"}
+              className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded text-sm font-bold flex items-center gap-2"
+            >
+              {status === "scanning" ? <Loader2 className="animate-spin w-4 h-4" /> : <Search className="w-4 h-4" />}
+              HUNT
+            </button>
+          </div>
+        </div>
+
+        <div className="panel p-6 space-y-4 rounded-xl border border-hairline bg-panel relative">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Manual File Analysis</h2>
+          <input type="file" onChange={handleFileScan} className="absolute inset-0 opacity-0 cursor-pointer" />
+          <div className="border-2 border-dashed border-white/10 rounded-lg p-10 text-center">
+            <Globe className="w-10 h-10 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Drop suspect image here to scan registry</p>
+          </div>
+        </div>
+
+        {status === "scanning" && (
+          <div className="bg-black/40 p-4 rounded-lg font-mono text-xs text-blue-400 border border-blue-500/20">
+            {log.map((l, i) => <div key={i} className="mb-1">{`> ${l}`}</div>)}
+          </div>
+        )}
       </div>
-    </div>
+    </AppShell>
   );
 }
