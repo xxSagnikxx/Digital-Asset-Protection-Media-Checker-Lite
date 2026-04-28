@@ -45,7 +45,7 @@ export default function SearchInterface() {
     fd.append('image', file);
 
     try {
-      const res = await fetch('http://127.0.0.1:8080/api/scan-suspect', { method: 'POST', body: fd });
+      const res = await fetch(`${API_BASE}/api/scan-suspect`, { method: 'POST', body: fd });
       const data = await res.json();
       if (data.match_found) {
         toast.error(`MATCH DETECTED: ${data.asset_name} (${data.score}%)`);
