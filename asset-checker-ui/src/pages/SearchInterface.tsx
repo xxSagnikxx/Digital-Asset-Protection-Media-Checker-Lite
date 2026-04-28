@@ -3,8 +3,6 @@ import { toast } from "sonner";
 import { Shield, Loader2, Globe, Search } from "lucide-react";
 import { AppShell } from "@/components/fortress/AppShell";
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8080';
-
 export default function SearchInterface() {
   const [status, setStatus] = useState<"idle" | "scanning">("idle");
   const [url, setUrl] = useState("");
@@ -16,18 +14,18 @@ export default function SearchInterface() {
     setLog(["Initializing surveillance engine...", `Targeting: ${url}`, "Fetching remote assets..."]);
 
     try {
-      const res = await fetch(`${API_BASE}/api/auto-scan-url`, {
+      const res = await fetch(`https://crowbar-phobia-previous.ngrok-free.dev/api/auto-scan-url`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'ngrok-skip-browser-warning': 'true'
         },
         body: JSON.stringify({ url })
       });
       const data = await res.json();
-      
+
       setLog(prev => [...prev, `Found ${data.scanned_count} images.`, `Detected ${data.matches_found} violations.`]);
-      
+
       if (data.matches_found > 0) {
         toast.error(`ALERT: ${data.matches_found} Unauthorized Assets Found`, { description: "Check reports for details." });
       } else {
@@ -51,12 +49,12 @@ export default function SearchInterface() {
     fd.append('image', file);
 
     try {
-      const res = await fetch(`${API_BASE}/api/scan-suspect`, { 
-        method: 'POST', 
+      const res = await fetch(`https://crowbar-phobia-previous.ngrok-free.dev/api/scan-suspect`, {
+        method: 'POST',
         headers: {
           'ngrok-skip-browser-warning': 'true'
         },
-        body: fd 
+        body: fd
       });
       const data = await res.json();
       if (data.match_found) {
@@ -83,14 +81,14 @@ export default function SearchInterface() {
         <div className="panel p-6 space-y-4 rounded-xl border border-hairline bg-panel">
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Target URL Scraper</h2>
           <div className="flex gap-2">
-            <input 
-              type="text" 
-              placeholder="https://suspect-sports-site.com/gallery" 
+            <input
+              type="text"
+              placeholder="https://suspect-sports-site.com/gallery"
               className="flex-1 bg-black/20 border border-hairline rounded px-4 py-2 text-sm"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
-            <button 
+            <button
               onClick={handleUrlHunt}
               disabled={status === "scanning"}
               className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded text-sm font-bold flex items-center gap-2"

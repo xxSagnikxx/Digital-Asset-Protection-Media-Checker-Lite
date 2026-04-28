@@ -13,7 +13,10 @@ const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
 
 app.use(express.json());
-app.use(cors({ origin: '*' }));
+app.use(cors({
+    origin: '*',
+    allowedHeaders: ['Content-Type', 'ngrok-skip-browser-warning']
+}));
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 app.post('/api/import-zip', upload.single('zip'), async (req, res) => {
@@ -28,10 +31,10 @@ app.post('/api/import-zip', upload.single('zip'), async (req, res) => {
             const fileName = `official/${Date.now()}-${entry.entryName.split('/').pop()}`;
             await supabase.storage.from('official-library').upload(fileName, imageBuffer, { contentType: 'image/jpeg' });
             const { data: { publicUrl } } = supabase.storage.from('official-library').getPublicUrl(fileName);
-            await supabase.from('official_assets').insert([{ 
-                name: entry.entryName.split('/').pop(), 
-                phash: hash, 
-                public_url: publicUrl 
+            await supabase.from('official_assets').insert([{
+                name: entry.entryName.split('/').pop(),
+                phash: hash,
+                public_url: publicUrl
             }]);
             uploadCount++;
         }
@@ -65,11 +68,11 @@ app.post('/api/scan-suspect', upload.single('image'), async (req, res) => {
             }
         }
         if (highestScore > 80) {
-            await supabase.from('asset_matches').insert([{ 
-                official_asset_id: bestMatch.id, 
-                suspect_url: 'Manual Scan', 
-                similarity_score: parseFloat(highestScore.toFixed(2)), 
-                status: 'pending_review' 
+            await supabase.from('asset_matches').insert([{
+                official_asset_id: bestMatch.id,
+                suspect_url: 'Manual Scan',
+                similarity_score: parseFloat(highestScore.toFixed(2)),
+                status: 'pending_review'
             }]);
             return res.json({ match_found: true, score: highestScore.toFixed(2), asset_name: bestMatch.name });
         }
@@ -86,8 +89,8 @@ app.post('/api/auto-scan-url', async (req, res) => {
         let matchesFound = 0;
         for (const imageUrl of foundImageUrls) {
             try {
-                const response = await axios.get(imageUrl, { 
-                    responseType: 'arraybuffer', 
+                const response = await axios.get(imageUrl, {
+                    responseType: 'arraybuffer',
                     timeout: 8000,
                     headers: { 'User-Agent': 'Mozilla/5.0' }
                 });
@@ -95,12 +98,12 @@ app.post('/api/auto-scan-url', async (req, res) => {
                 for (const asset of officials) {
                     const score = calculateSimilarity(suspectHash, asset.phash);
                     if (score > 80) {
-                        await supabase.from('asset_matches').insert([{ 
-                            official_asset_id: asset.id, 
-                            suspect_url: imageUrl, 
-                            source_page_url: targetUrl, 
-                            similarity_score: parseFloat(score.toFixed(2)), 
-                            status: 'pending_review' 
+                        await supabase.from('asset_matches').insert([{
+                            official_asset_id: asset.id,
+                            suspect_url: imageUrl,
+                            source_page_url: targetUrl,
+                            similarity_score: parseFloat(score.toFixed(2)),
+                            status: 'pending_review'
                         }]);
                         matchesFound++;
                     }
