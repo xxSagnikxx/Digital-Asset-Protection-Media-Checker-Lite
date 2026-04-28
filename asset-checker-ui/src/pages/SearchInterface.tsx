@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import { Shield, Loader2, Globe, Search } from "lucide-react";
 import { AppShell } from "@/components/fortress/AppShell";
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8080';
+
 export default function SearchInterface() {
   const [status, setStatus] = useState<"idle" | "scanning">("idle");
   const [url, setUrl] = useState("");
@@ -14,7 +16,7 @@ export default function SearchInterface() {
     setLog(["Initializing surveillance engine...", `Targeting: ${url}`, "Fetching remote assets..."]);
 
     try {
-      const res = await fetch('http://127.0.0.1:8080/api/auto-scan-url', {
+      const res = await fetch(`${API_BASE}/api/auto-scan-url`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url })
@@ -28,8 +30,9 @@ export default function SearchInterface() {
       } else {
         toast.success("Scan complete. Site is clean.");
       }
-    } catch {
-      toast.error("Scan failed.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Scan failed. Backend unreachable.");
     } finally {
       setStatus("idle");
     }
@@ -52,7 +55,8 @@ export default function SearchInterface() {
       } else {
         toast.success("No match found.");
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       toast.error("Scan failed.");
     } finally {
       setStatus("idle");

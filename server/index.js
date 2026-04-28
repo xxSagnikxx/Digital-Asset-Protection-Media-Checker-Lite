@@ -16,7 +16,6 @@ app.use(express.json());
 app.use(cors({ origin: '*' }));
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
-
 app.post('/api/import-zip', upload.single('zip'), async (req, res) => {
     try {
         const zip = new AdmZip(req.file.buffer);
@@ -127,7 +126,6 @@ app.patch('/api/matches/:id/status', async (req, res) => {
         res.json({ message: 'Status updated', match: data[0] });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
-
-app.listen(8080, '127.0.0.1', () => {
-    console.log('SYSTEM ONLINE: http://127.0.0.1:8080');
+app.listen(8080, '0.0.0.0', () => {
+    console.log('SYSTEM ONLINE: Port 8080');
 });
