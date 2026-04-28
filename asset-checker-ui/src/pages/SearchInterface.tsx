@@ -18,7 +18,10 @@ export default function SearchInterface() {
     try {
       const res = await fetch(`${API_BASE}/api/auto-scan-url`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true'
+        },
         body: JSON.stringify({ url })
       });
       const data = await res.json();
@@ -48,7 +51,13 @@ export default function SearchInterface() {
     fd.append('image', file);
 
     try {
-      const res = await fetch(`${API_BASE}/api/scan-suspect`, { method: 'POST', body: fd });
+      const res = await fetch(`${API_BASE}/api/scan-suspect`, { 
+        method: 'POST', 
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        },
+        body: fd 
+      });
       const data = await res.json();
       if (data.match_found) {
         toast.error(`MATCH DETECTED: ${data.asset_name} (${data.score}%)`);
